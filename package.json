@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/cfclaudio/PresentR/issues"
   },
-  "homepage": "https://github.com/cfclaudio/PresentR#readme"
+  "homepage": "https://github.com/cfclaudio/PresentR#readme",
+  "dependencies": {
+    "mongoose": "^5.0.1"
+  }
 }
