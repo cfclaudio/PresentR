@@ -1,8 +1,9 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const hbs = require('hbs');
 const bodyParser = require('body-parser');
-const socket = require('socket.io');
+const express = require('express');
+const hbs = require('hbs');
+const http = require('http');
+const mongoose = require('mongoose');
+const socketIO = require('socket.io');
 
 const {User} = require('./userModel');
 
@@ -12,6 +13,9 @@ mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost:27017/presentRDB');
 
 const app = express();
+
+const server = http.createServer(app);
+const io = socketIO(server);
 
 app.set(`view engine`, `hbs`);
 app.use(bodyParser.urlencoded());
@@ -36,6 +40,10 @@ app.post('/loginAttempt', (req, res) => {
 
 });
 
+app.get('/loginAttempt', (req, res) => {
+
+})
+
 app.get('/registrationScreen', (req, res) => {
   res.render('../views/registration.hbs');
 })
@@ -55,6 +63,6 @@ app.post('/register', (req, res) => {
 
 // app.post('/')
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log("Started on port ", port);
 });
