@@ -1,20 +1,23 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const hbs = require('hbs');
 const bodyParser = require('body-parser');
-const abc = require('./userModel');
-abc.x
+const socket = require('socket.io');
 
 const {User} = require('./userModel');
+
+const port = process.env.PORT || 3000;
 
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost:27017/presentRDB');
 
 const app = express();
 
+app.set(`view engine`, `hbs`);
 app.use(bodyParser.json());
 
-app.get('./', (req, res) => {
-  res.render('main.html');
+app.get('/', (req, res) => {
+  res.render('../views/login.hbs');
 });
 
 app.post('/userTable', (req, res) => {
@@ -29,6 +32,6 @@ app.post('/userTable', (req, res) => {
   });
 });
 
-app.listen(3000, () => {
-  console.log("Started on port 3000");
+app.listen(port, () => {
+  console.log("Started on port ", port);
 });
