@@ -12,7 +12,10 @@ const {User} = require('./userModel');
 const port = process.env.PORT || 3000;
 
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost:27017/presentRDB');
+
+var uri = "mongodb://admin:admin@ds117858.mlab.com:17858/presentr";
+
+mongoose.connect(uri);
 
 const app = express();
 
@@ -32,6 +35,9 @@ app.get('/canvas', (req, res, next) => {
   // console.log('Canvas: ', res.locals.authenticated);
   if (authenticated) {
     res.render('../views/canvas.hbs');
+  }
+  else {
+    res.redirect('/');
   }
 })
 
@@ -96,7 +102,6 @@ io.on('connection', function(socket){
     io.sockets.emit('canvas', canvasobj);
 
   });
-
 });
 
 server.listen(port, () => {
