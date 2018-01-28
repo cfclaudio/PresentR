@@ -17,8 +17,7 @@
     <div style="display: inline-block; margin-left: 10px">
 
         <button id="drawing-mode" class="btn btn-info">Enter drawing mode</button>
-        <button id="text-mode" class="btn btn-info">Insert text box</button>
-        <input type="text" id="text-value" name="longText" value="AddYourTextHere">
+        <button id="text-mode" class="btn btn-info">Enter text box</button>
         <span class="add-shape-options" style="">
             <label for="shape-selector"></label>
             <select id="shape-selector">
@@ -35,6 +34,11 @@
 
         <label for="drawing-color">Color:</label>
             <input type="color" value="#000080" id="drawing-color"><br><br>
+
+        <div id="text-mode-options" style="display:none">
+            <button id="insert-text">Insert text box</button>
+            <input type="text" id="text-value" name="longText" value="AddYourTextHere">
+        </div>
 
         <div id="drawing-mode-options" style="display:none">
             <label for="drawing-mode-selector">Mode:</label>
@@ -84,8 +88,11 @@
             isDrawingMode: false, width:900, height:600
         });
         fabric.Object.prototype.transparentCorners = false;
+
         var drawingModeEl = $('drawing-mode'),
-            insertingTextEL = $('text-mode'),
+            textModeEl = $('text-mode'),
+            insertingTextEL = $('insert-text'),
+            textOptionsEl = $('text-mode-options'),
             drawingOptionsEl = $('drawing-mode-options'),
             drawingColorEl = $('drawing-color'),
             drawingShadowColorEl = $('drawing-shadow-color'),
@@ -97,6 +104,9 @@
             textValue = $('text-value'),
             savingImgEl = $('save-canvas'),
             addShapeOptionsEL = $('add-shape-options');
+
+        var notTextMode = true;
+
         clearEl.onclick = function() { canvas.clear() };
         deleteObjectsEl.onclick = function() {
             var activeObject = canvas.getActiveObject(),
@@ -120,6 +130,19 @@
                 drawingOptionsEl.style.display = 'none';
             }
         };
+
+        textModeEl.onclick = function(){
+            if (notTextMode) {
+                textModeEl.innerHTML = 'Cancel text mode';
+                textOptionsEl.style.display = '';
+                notTextMode = false;
+            } else {
+                textModeEl.innerHTML = 'Enter text mode';
+                textOptionsEl.style.display = 'none';
+                notTextMode = true;
+            }
+        };
+
         insertingTextEL.onclick = function() {
             var text = new fabric.IText(textValue.value, { left: 100, top: 100 });
             text.fill = drawingColorEl.value;
