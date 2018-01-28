@@ -105,7 +105,7 @@
             savingImgEl = $('save-canvas'),
             addShapeOptionsEL = $('add-shape-options');
 
-        var notTextMode = true;
+        var isTextMode = false;
 
         clearEl.onclick = function() { canvas.clear() };
         deleteObjectsEl.onclick = function() {
@@ -121,7 +121,7 @@
             }
         };
         drawingModeEl.onclick = function() {
-            canvas.isDrawingMode = !canvas.isDrawingMode;
+            if (!isTextMode) { canvas.isDrawingMode = !canvas.isDrawingMode; }
             if (canvas.isDrawingMode) {
                 drawingModeEl.innerHTML = 'Cancel drawing mode';
                 drawingOptionsEl.style.display = '';
@@ -132,14 +132,13 @@
         };
 
         textModeEl.onclick = function(){
-            if (notTextMode) {
+            if (!canvas.isDrawingMode) { isTextMode = !isTextMode; }
+            if (isTextMode) {
                 textModeEl.innerHTML = 'Cancel text mode';
                 textOptionsEl.style.display = '';
-                notTextMode = false;
             } else {
                 textModeEl.innerHTML = 'Enter text mode';
                 textOptionsEl.style.display = 'none';
-                notTextMode = true;
             }
         };
 
