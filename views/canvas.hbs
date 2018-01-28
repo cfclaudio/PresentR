@@ -18,6 +18,7 @@
         <!-- interactive menu -->
         <div style="display: inline-block; margin-left: 10px">
           <button id="drawing-mode" class="btn btn-info">Cancel drawing mode</button>
+          <button id="text-mode" class="btn btn-info">Inserting text box</button>
           <button id="clear-canvas" class="btn btn-info">Clear</button><br><br>
 
           <div id="drawing-mode-options" style="">
@@ -50,6 +51,18 @@
             <label for="drawing-shadow-offset">Shadow offset:</label>
             <span class="info">0</span><input type="range" value="0" min="0" max="50" id="drawing-shadow-offset">
           </div>
+
+            <div class="controls">
+                <p> Font-family: 
+                    <select id="font-family">
+                        <option value="Times New Roman">Times New Roman</option>
+                        <option value="Pacifico">Pacifico</option>
+                        <option value="VT323">VT323</option>
+                        <option value="Quicksand">Quicksand</option>
+                        <option value="Inconsolata">Inconsolata</option>
+                    </select>
+                </p>
+            </div>
         </div>
 
         <!-- A canvas tag is required or
@@ -58,7 +71,7 @@
 
 </body>
 
-<script>
+<script> // FREE DRAWING
     // Place script tags at the bottom of the page.
     // That way progressive page rendering and
     // downloads are not blocked.
@@ -75,6 +88,7 @@
   fabric.Object.prototype.transparentCorners = false;
 
   var drawingModeEl = $('drawing-mode'),
+      insertingTextEL = $('text-mode'),
       drawingOptionsEl = $('drawing-mode-options'),
       drawingColorEl = $('drawing-color'),
       drawingShadowColorEl = $('drawing-shadow-color'),
@@ -95,6 +109,11 @@
       drawingModeEl.innerHTML = 'Enter drawing mode';
       drawingOptionsEl.style.display = 'none';
     }
+  };
+
+  insertingTextEL.onclick = function() {
+    var text = new fabric.Text('', { left: 100, top: 100 });
+    canvas.add(text);
   };
 
   if (fabric.PatternBrush) {
@@ -173,7 +192,7 @@
     };
 
     var img = new Image();
-    img.src = '../assets/honey_im_subtle.png';
+    img.src = 'empty.png';
 
     var texturePatternBrush = new fabric.PatternBrush(canvas);
     texturePatternBrush.source = img;
@@ -245,7 +264,10 @@
     });
   }
 })();
+
 </script>
+
+
 
 </head>
 
