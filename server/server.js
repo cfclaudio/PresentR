@@ -5,7 +5,6 @@ const http = require('http');
 const mongoose = require('mongoose');
 const socketIO = require('socket.io');
 const bcrypt = require('bcrypt');
-const saltRounds = 10;
 
 const {User} = require('./userModel');
 
@@ -73,7 +72,7 @@ app.get('/registrationScreen', (req, res, next) => {
 })
 
 app.post('/register', (req, res) => {
-  var hash = bcrypt.hashSync(req.body.password, saltRounds);
+  var hash = bcrypt.hashSync(req.body.password, 10);
   var user = new User({
     username: req.body.username,
     password: hash
