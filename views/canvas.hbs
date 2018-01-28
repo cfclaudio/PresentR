@@ -19,7 +19,8 @@
         <div style="display: inline-block; margin-left: 10px">
           <button id="drawing-mode" class="btn btn-info">Enter drawing mode</button>
           <button id="text-mode" class="btn btn-info">Inserting text box</button>
-          <button id="clear-canvas" class="btn btn-info">Clear</button><br><br>
+          <button id="clear-canvas" class="btn btn-info">Clear</button>
+          <button id="delete-objects">Delete selected object(s)</button><br><br>
 
           <div id="drawing-mode-options" style="display:none">
             <label for="drawing-mode-selector">Mode:</label>
@@ -96,8 +97,16 @@
       drawingShadowWidth = $('drawing-shadow-width'),
       drawingShadowOffset = $('drawing-shadow-offset'),
       clearEl = $('clear-canvas');
+      deleteObjectsEl = $('delete-objects');
 
   clearEl.onclick = function() { canvas.clear() };
+
+  deleteObjectsEl.onclick = function() { 
+    var activeObject = canvas.getActiveObject();
+    canvas.remove(activeObject); 
+  }
+
+
 
   drawingModeEl.onclick = function() {
     canvas.isDrawingMode = !canvas.isDrawingMode;
@@ -267,7 +276,16 @@
 
 </script>
 
-
+<script>
+    function deleteObjects(){
+    var activeObject = canvas.getActiveObject(),
+        activeGroup = canvas.getActiveGroup();
+    canvas.remove(activeObject);
+    if (activeObject) {
+        canvas.remove(activeObject);
+    }
+}
+</script>
 
 </head>
 
