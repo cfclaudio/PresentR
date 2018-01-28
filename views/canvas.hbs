@@ -10,7 +10,6 @@
     <!-- Get the highest 1.X version of jQuery from CDN. Required for ready() function. -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="../server/socket.js"></script>
 
 <body>
         <!-- interactive menu -->
@@ -77,7 +76,7 @@
 
     // Run only when HTML is loaded and
     // DOM properly initialized (courtesy jquery)
-    (function() {
+
   var $ = function(id){return document.getElementById(id)};
 
   var canvas = this.__canvas = new fabric.Canvas('c', {
@@ -97,9 +96,13 @@
       clearEl = $('clear-canvas');
       deleteObjectsEl = $('delete-objects');
 
-  clearEl.onclick = function() { canvas.clear() };
+  clearEl.onclick = function() {
+    canvas.clear();
+
+  };
 
   deleteObjectsEl.onclick = function() {
+    // console.log(canvas._objects);
     var activeObject = canvas.getActiveObject();
     canvas.remove(activeObject);
   }
@@ -270,7 +273,6 @@
       color: drawingShadowColorEl.value,
     });
   }
-})();
 
 </script>
 
@@ -283,6 +285,33 @@
         canvas.remove(activeObject);
     }
 }
+</script>
+
+<script>
+
+var socket = io();
+socket.on('canvas', function(canvasobj){
+console.log('HTML: ', canvas);
+ canvas.clear();
+ canvas.loadFromJSON(canvasobj, canvas.renderAll.bind(canvas));
+});
+
+// console.log(canvas);
+// setInterval(() => {
+//   var canvasStr = JSON.stringify(canvas);
+//   socket.emit('canvas', canvasStr);
+//   console.log(canvasStr);
+// }, 500);
+
+
+canvas.on('mouse:up', function(event){
+  console.log(canvas)
+  // event.preventDefault();
+
+  var canvasStr = JSON.stringify(canvas);
+  socket.emit('canvasEmit', canvasStr);
+});
+
 </script>
 
 </head>
