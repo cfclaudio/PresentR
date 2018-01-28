@@ -144,7 +144,7 @@
         circleEl.onclick = function() {
             var circle = new fabric.Circle( {
               radius: 20,
-              fill: 'green',
+              fill: drawingColorEl.value,
               left: 100,
               top: 100
             });
@@ -155,7 +155,7 @@
           var rect = new fabric.Rect( {
             width: 50,
             height: 30,
-            fill: 'blue',
+            fill: drawingColorEl.value,
             left: 100,
             top: 100
           });
