@@ -17,11 +17,11 @@
 <body>
         <!-- interactive menu -->
         <div style="display: inline-block; margin-left: 10px">
-          <button id="drawing-mode" class="btn btn-info">Cancel drawing mode</button>
+          <button id="drawing-mode" class="btn btn-info">Enter drawing mode</button>
           <button id="text-mode" class="btn btn-info">Inserting text box</button>
           <button id="clear-canvas" class="btn btn-info">Clear</button><br><br>
 
-          <div id="drawing-mode-options" style="">
+          <div id="drawing-mode-options" style="display:none">
             <label for="drawing-mode-selector">Mode:</label>
             <select id="drawing-mode-selector">
               <option>Pencil</option>
@@ -82,7 +82,7 @@
   var $ = function(id){return document.getElementById(id)};
 
   var canvas = this.__canvas = new fabric.Canvas('c', {
-    isDrawingMode: true, width:900, height:600
+    isDrawingMode: false, width:900, height:600
   });
 
   fabric.Object.prototype.transparentCorners = false;
@@ -112,7 +112,7 @@
   };
 
   insertingTextEL.onclick = function() {
-    var text = new fabric.Text('', { left: 100, top: 100 });
+    var text = new fabric.Text('Hello World!', { left: 100, top: 100 });
     canvas.add(text);
   };
 
