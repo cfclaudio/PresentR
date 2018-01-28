@@ -4,6 +4,8 @@ const hbs = require('hbs');
 const http = require('http');
 const mongoose = require('mongoose');
 const socketIO = require('socket.io');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 const {User} = require('./userModel');
 
@@ -24,7 +26,6 @@ app.use(bodyParser.urlencoded());
 
 app.get('/', (req, res, next) => {
   res.render('../views/login.hbs');
-  // next();
 });
 
 app.get('/canvas', (req, res, next) => {
@@ -32,55 +33,57 @@ app.get('/canvas', (req, res, next) => {
   if (authenticated) {
     res.render('../views/canvas.hbs');
   }
-  else {
-    res.redirect('/')
-  }
-
 })
 
 app.post('/loginAttempt', (req, res, next) => {
 
-  User.findOne({'username': `${req.body.username}`, 'password': `${req.body.password}`}, (err, success) => {
+  User.findOne({'username': `${req.body.username}`}, (err, success) => {
+    console.log(success);
     if (!success) {
+      console.log("this username dont exist");
       res.redirect('/');
     }
     else {
-      authenticated = true;
-      res.redirect('/canvas');
+      console.log(bcrypt.compareSync(`${req.body.password}`, success.password));
+      if(bcrypt.compareSync(`${req.body.password}`, success.password)) {
+        console.log("this tru pass");
+        res.redirect('/canvas');
+        authenticated = true;
+      }
+      else {
+        console.log("this false pass");
+        res.redirect('/');
+      }
+
+
     }
   });
-
 });
-
-// app.get('/loginAttempt', (req, res, next) => {
-//
-// })
 
 app.get('/registrationScreen', (req, res, next) => {
   res.render('../views/registration.hbs');
 })
 
 app.post('/register', (req, res) => {
-  console.log(req.body)
+  var hash = bcrypt.hashSync(req.body.password, saltRounds);
+  console.log(hash);
   var user = new User({
     username: req.body.username,
-    password: req.body.password
+    password: hash
   });
-  user.save().then((doc) => {
+  user.save()
+  .then((doc) => {
     res.redirect('/');
   }, (e) => {
     res.status(400).send(e);
-  });
+  })
+  .catch((err) => {
+    console.log('Unable to save into db');
+  })
 });
-
-// app.post('/')
 
 io.on('connection', (socket) => {
   console.log('New user connected');
-
-  socket.on('disconnect', () => {
-    console.log('New user disconnected');
-  })
 });
 
 server.listen(port, () => {
