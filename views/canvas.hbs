@@ -17,8 +17,7 @@
     <div style="display: inline-block; margin-left: 10px">
 
         <button id="drawing-mode" class="btn btn-info">Enter drawing mode</button>
-        <button id="text-mode" class="btn btn-info">Insert text box</button>
-        <input type="text" id="text-value" name="longText" value="AddYourTextHere">
+        <button id="text-mode" class="btn btn-info">Enter text box</button>
         <span class="add-shape-options" style="">
             <label for="shape-selector"></label>
             <select id="shape-selector">
@@ -133,7 +132,6 @@
             if (canvas.isDrawingMode) {
                 drawingModeEl.innerHTML = 'Cancel drawing mode';
                 drawingOptionsEl.style.display = '';
-            } else if (isTextMode) {
             } else {
                 drawingModeEl.innerHTML = 'Enter drawing mode';
                 drawingOptionsEl.style.display = 'none';
@@ -142,17 +140,13 @@
 
         textModeEl.onclick = function(){
             if (notTextMode) {
-              console.log('istextmode');
                 textModeEl.innerHTML = 'Cancel text mode';
                 textOptionsEl.style.display = '';
-                isTextMode = false;
-            } else if (canvas.isDrawingMode) {
-              console.log('else');
+                notTextMode = false;
             } else {
-              console.log('is not textmode');
                 textModeEl.innerHTML = 'Enter text mode';
                 textOptionsEl.style.display = 'none';
-                isTextMode = true;
+                notTextMode = true;
             }
         };
 
