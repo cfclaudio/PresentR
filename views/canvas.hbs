@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="style/canvas.css">
 
     <!-- Get version 1.7.21 of Fabric.js from CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.7.21/fabric.min.js" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.6.7/fabric.min.js" ></script>
 
     <!-- Get the highest 1.X version of jQuery from CDN. Required for ready() function. -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
@@ -22,7 +22,8 @@
         <button id="drawing-mode" class="btn btn-info">Enter drawing mode</button>
         <button id="text-mode" class="btn btn-info">Inserting text box</button>
         <button id="clear-canvas" class="btn btn-info">Clear</button>
-        <button id="delete-objects">Delete selected object(s)</button><br><br>
+        <button id="delete-objects">Delete selected object(s)</button>
+        <button id="save-canvas">Save drawing</button><br><br>
 
         <div id="drawing-mode-options" style="display:none">
             <label for="drawing-mode-selector">Mode:</label>
@@ -100,9 +101,10 @@
             drawingLineWidthEl = $('drawing-line-width'),
             drawingShadowWidth = $('drawing-shadow-width'),
             drawingShadowOffset = $('drawing-shadow-offset'),
-            clearEl = $('clear-canvas');
-            deleteObjectsEl = $('delete-objects');
+            clearEl = $('clear-canvas'),
+            deleteObjectsEl = $('delete-objects'),
             textValue = $('text-value'),
+            savingImgEl = $('save-canvas');
 
 
         // textForm.submit = function( event ) {
@@ -138,10 +140,14 @@
             }
         };
 
-        insertingTextEL.onclick =  function() {
+        insertingTextEL.onclick = function() {
             var text = new fabric.Text(textValue.value, { left: 100, top: 100 });
             canvas.add(text);
         };
+
+        savingImgEl.onclick = function() {
+            var canvas.toDataURL(format);
+        }
 
         if (fabric.PatternBrush) {
             var vLinePatternBrush = new fabric.PatternBrush(canvas);
