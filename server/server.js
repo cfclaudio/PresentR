@@ -6,13 +6,21 @@ const mongoose = require('mongoose');
 const socketIO = require('socket.io');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+//
+// process.on('unhandledRejection', function(reason, promise) {
+//     console.log(promise);
+// });
 
 const {User} = require('./userModel');
 
 const port = process.env.PORT || 3000;
 
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost:27017/presentRDB');
+
+var uri = "mongodb+srv://gillt1:deltahacks18!@presentrdb-f1s9q.mongodb.net/users?authMode=scram-sha1";
+var result = encodeURIComponent(uri);
+
+mongoose.connect(uri);
 
 const app = express();
 
