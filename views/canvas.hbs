@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html>
 <head>
     <meta charset="utf-8">
     <title>fabric.js-simple text display</title>
@@ -15,11 +16,11 @@
     <!-- interactive menu -->
     <div style="display: inline-block; margin-left: 10px">
 
-        <input type="text" id="text-value" name="longText" value="Add your text here">
         <button id="drawing-mode" class="btn btn-info">Enter drawing mode</button>
         <button id="text-mode" class="btn btn-info">Inserting text box</button>
-        <button id="clear-canvas" class="btn btn-info">Clear</button>
+        <input type="text" id="text-value" name="longText" value="AddYourTextHere">
         <button id="delete-objects">Delete selected object(s)</button>
+        <button id="clear-canvas" class="btn btn-info">Clear</button>
         <button id="save-canvas"><a id="downloadLnk" download="presentr.jpg">Save drawing</a></button>
         <br><br>
 
@@ -39,31 +40,31 @@
             </select><br>
 
             <label for="drawing-line-width">Line width:</label>
-            <span class="info">30</span><input type="range" value="30" min="0" max="150" id="drawing-line-width">
+            <span class="info">10</span><input type="range" value="10" min="0" max="150" id="drawing-line-width">
 
             <label for="drawing-color">Line color:</label>
-            <input type="color" value="#005E7A" id="drawing-color"><br>
+            <input type="color" value="#000080" id="drawing-color"><br>
 
             <label for="drawing-shadow-width">Shadow width:</label>
             <span class="info">0</span><input type="range" value="0" min="0" max="50" id="drawing-shadow-width">
 
             <label for="drawing-shadow-color">Shadow color:</label>
-            <input type="color" value="#005E7A" id="drawing-shadow-color">
+            <input type="color" value=" #080808" id="drawing-shadow-color">
 
             <label for="drawing-shadow-offset">Shadow offset:</label>
             <span class="info">0</span><input type="range" value="0" min="0" max="50" id="drawing-shadow-offset">
           </div>
+          <br>
 
-            <div class="controls">
-                <p> Font-family:
-                    <select id="font-family">
-                        <option value="Times New Roman">Times New Roman</option>
-                        <option value="Pacifico">Pacifico</option>
-                        <option value="VT323">VT323</option>
-                        <option value="Quicksand">Quicksand</option>
-                        <option value="Inconsolata">Inconsolata</option>
-                    </select>
-                </p>
+            <div class="controls" style="display:none">
+              <label for="font-family">Font-family:</label>
+              <select id="font-family">
+                  <option value="Times New Roman">Times New Roman</option>
+                  <option value="Pacifico">Pacifico</option>
+                  <option value="VT323">VT323</option>
+                  <option value="Quicksand">Quicksand</option>
+                  <option value="Inconsolata">Inconsolata</option>
+              </select>
             </div>
         </div>
 
@@ -81,7 +82,7 @@
     // Run only when HTML is loaded and
     // DOM properly initialized (courtesy jquery)
 
-    
+
         var $ = function(id){return document.getElementById(id)};
 
         var canvas = this.__canvas = new fabric.Canvas('c', {
@@ -141,10 +142,6 @@
             var text = new fabric.Textbox(textValue.value, { left: 100, top: 100 });
             canvas.add(text);
         };
-
-        /*savingImgEl.onclick = function() {
-            var canvas.toDataURL(format);
-        };*/
 
         if (fabric.PatternBrush) {
             var vLinePatternBrush = new fabric.PatternBrush(canvas);
@@ -322,7 +319,7 @@ canvas.on('mouse:up', function(event){
    var canvasStr = JSON.stringify(canvas);
   socket.emit('canvasEmit', canvasStr);
  });
- 
+
 </script>
 
 </head>
