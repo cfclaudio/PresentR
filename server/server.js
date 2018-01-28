@@ -6,10 +6,6 @@ const mongoose = require('mongoose');
 const socketIO = require('socket.io');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-//
-// process.on('unhandledRejection', function(reason, promise) {
-//     console.log(promise);
-// });
 
 const {User} = require('./userModel');
 
@@ -17,8 +13,7 @@ const port = process.env.PORT || 3000;
 
 mongoose.Promise = global.Promise;
 
-var uri = "mongodb+srv://gillt1:deltahacks18!@presentrdb-f1s9q.mongodb.net/users?authMode=scram-sha1";
-var result = encodeURIComponent(uri);
+var uri = "mongodb://admin:admin@ds117858.mlab.com:17858/presentr";
 
 mongoose.connect(uri);
 
@@ -40,6 +35,9 @@ app.get('/canvas', (req, res, next) => {
   // console.log('Canvas: ', res.locals.authenticated);
   if (authenticated) {
     res.render('../views/canvas.hbs');
+  }
+  else {
+    res.redirect('/');
   }
 })
 
@@ -104,7 +102,6 @@ io.on('connection', function(socket){
     io.sockets.emit('canvas', canvasobj);
 
   });
-
 });
 
 server.listen(port, () => {
