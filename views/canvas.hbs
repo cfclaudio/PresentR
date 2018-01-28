@@ -102,11 +102,17 @@
   clearEl.onclick = function() { canvas.clear() };
 
   deleteObjectsEl.onclick = function() { 
-    var activeObject = canvas.getActiveObject();
-    canvas.remove(activeObject); 
+    var activeObject = canvas.getActiveObject(),
+        activeGroup = canvas.getActiveGroup();
+    if (activeObject) { canvas.remove(activeObject); }
+    else if (activeGroup) {
+        var objectsInGroup = activeGroup.getObjects();
+        canvas.discardActiveGroup();
+        objectsInGroup.forEach(function(object) {
+        canvas.remove(object);
+        });
+    }
   }
-
-
 
   drawingModeEl.onclick = function() {
     canvas.isDrawingMode = !canvas.isDrawingMode;
@@ -274,17 +280,6 @@
   }
 })();
 
-</script>
-
-<script>
-    function deleteObjects(){
-    var activeObject = canvas.getActiveObject(),
-        activeGroup = canvas.getActiveGroup();
-    canvas.remove(activeObject);
-    if (activeObject) {
-        canvas.remove(activeObject);
-    }
-}
 </script>
 
 </head>
