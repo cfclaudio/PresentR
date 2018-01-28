@@ -80,7 +80,7 @@
     // Run only when HTML is loaded and
     // DOM properly initialized (courtesy jquery)
 
-    (function() {
+    
         var $ = function(id){return document.getElementById(id)};
 
         var canvas = this.__canvas = new fabric.Canvas('c', {
@@ -293,37 +293,31 @@
           color: drawingShadowColorEl.value,
         });
       }
-  })();
+
 
 </script>
 
 
 <script>
-
  var socket = io();
  socket.on('canvas', function(canvasobj){
  console.log('HTML: ', canvas);
   canvas.clear();
   canvas.loadFromJSON(canvasobj, canvas.renderAll.bind(canvas));
  });
-
  // console.log(canvas);
  // setInterval(() => {
  //   var canvasStr = JSON.stringify(canvas);
  //   socket.emit('canvas', canvasStr);
  //   console.log(canvasStr);
  // }, 500);
-
-
 canvas.on('mouse:up', function(event){
   console.log(canvas)
    // event.preventDefault();
-
    var canvasStr = JSON.stringify(canvas);
   socket.emit('canvasEmit', canvasStr);
  });
  
-
 </script>
 
 </head>
