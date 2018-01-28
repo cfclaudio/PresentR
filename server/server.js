@@ -91,7 +91,7 @@ io.on('connection', function(socket){
 
   });
   socket.on('canvasEmit', (canvasobj) => {
-    // console.log('The canvas2: ', canvasobj);
+    console.log('The canvas2: ', canvasobj);
     canv = canvasobj;
     io.sockets.emit('canvas', canvasobj);
 
