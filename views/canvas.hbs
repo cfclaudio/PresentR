@@ -1,25 +1,30 @@
 <!DOCTYPE html>
+<html>
 <head>
     <meta charset="utf-8">
     <title>fabric.js-simple text display</title>
     <link rel="stylesheet" href="style/canvas.css">
 
     <!-- Get version 1.7.21 of Fabric.js from CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.7.21/fabric.min.js" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.6.7/fabric.min.js" ></script>
 
     <!-- Get the highest 1.X version of jQuery from CDN. Required for ready() function. -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
 
 <body>
-        <!-- interactive menu -->
-        <div style="display: inline-block; margin-left: 10px">
-          <button id="drawing-mode" class="btn btn-info">Enter drawing mode</button>
-          <button id="text-mode" class="btn btn-info">Inserting text box</button>
-          <button id="clear-canvas" class="btn btn-info">Clear</button>
-          <button id="delete-objects">Delete selected object(s)</button><br><br>
+    <!-- interactive menu -->
+    <div style="display: inline-block; margin-left: 10px">
 
-          <div id="drawing-mode-options" style="display:none">
+        <button id="drawing-mode" class="btn btn-info">Enter drawing mode</button>
+        <button id="text-mode" class="btn btn-info">Inserting text box</button>
+        <input type="text" id="text-value" name="longText" value="AddYourTextHere">
+        <button id="delete-objects">Delete selected object(s)</button>
+        <button id="clear-canvas" class="btn btn-info">Clear</button>
+        <button id="save-canvas"><a id="downloadLnk" download="presentr.jpg">Save drawing</a></button>
+        <br><br>
+
+        <div id="drawing-mode-options" style="display:none">
             <label for="drawing-mode-selector">Mode:</label>
             <select id="drawing-mode-selector">
               <option>Pencil</option>
@@ -35,31 +40,31 @@
             </select><br>
 
             <label for="drawing-line-width">Line width:</label>
-            <span class="info">30</span><input type="range" value="30" min="0" max="150" id="drawing-line-width">
+            <span class="info">10</span><input type="range" value="10" min="0" max="150" id="drawing-line-width">
 
             <label for="drawing-color">Line color:</label>
-            <input type="color" value="#005E7A" id="drawing-color"><br>
+            <input type="color" value="#000080" id="drawing-color"><br>
 
             <label for="drawing-shadow-width">Shadow width:</label>
             <span class="info">0</span><input type="range" value="0" min="0" max="50" id="drawing-shadow-width">
 
             <label for="drawing-shadow-color">Shadow color:</label>
-            <input type="color" value="#005E7A" id="drawing-shadow-color">
+            <input type="color" value=" #080808" id="drawing-shadow-color">
 
             <label for="drawing-shadow-offset">Shadow offset:</label>
             <span class="info">0</span><input type="range" value="0" min="0" max="50" id="drawing-shadow-offset">
           </div>
+          <br>
 
-            <div class="controls">
-                <p> Font-family:
-                    <select id="font-family">
-                        <option value="Times New Roman">Times New Roman</option>
-                        <option value="Pacifico">Pacifico</option>
-                        <option value="VT323">VT323</option>
-                        <option value="Quicksand">Quicksand</option>
-                        <option value="Inconsolata">Inconsolata</option>
-                    </select>
-                </p>
+            <div class="controls" style="display:none">
+              <label for="font-family">Font-family:</label>
+              <select id="font-family">
+                  <option value="Times New Roman">Times New Roman</option>
+                  <option value="Pacifico">Pacifico</option>
+                  <option value="VT323">VT323</option>
+                  <option value="Quicksand">Quicksand</option>
+                  <option value="Inconsolata">Inconsolata</option>
+              </select>
             </div>
         </div>
 
@@ -77,241 +82,243 @@
     // Run only when HTML is loaded and
     // DOM properly initialized (courtesy jquery)
 
-  var $ = function(id){return document.getElementById(id)};
 
-  var canvas = this.__canvas = new fabric.Canvas('c', {
-    isDrawingMode: false, width:900, height:600
-  });
+        var $ = function(id){return document.getElementById(id)};
 
-  fabric.Object.prototype.transparentCorners = false;
+        var canvas = this.__canvas = new fabric.Canvas('c', {
+            isDrawingMode: false, width:900, height:600
+        });
 
-  var drawingModeEl = $('drawing-mode'),
-      insertingTextEL = $('text-mode'),
-      drawingOptionsEl = $('drawing-mode-options'),
-      drawingColorEl = $('drawing-color'),
-      drawingShadowColorEl = $('drawing-shadow-color'),
-      drawingLineWidthEl = $('drawing-line-width'),
-      drawingShadowWidth = $('drawing-shadow-width'),
-      drawingShadowOffset = $('drawing-shadow-offset'),
-      clearEl = $('clear-canvas');
-      deleteObjectsEl = $('delete-objects');
+        fabric.Object.prototype.transparentCorners = false;
 
-  clearEl.onclick = function() {
-    canvas.clear();
-
-  };
-
-  deleteObjectsEl.onclick = function() {
-    // console.log(canvas._objects);
-    var activeObject = canvas.getActiveObject();
-    canvas.remove(activeObject);
-  }
+        var drawingModeEl = $('drawing-mode'),
+            insertingTextEL = $('text-mode'),
+            drawingOptionsEl = $('drawing-mode-options'),
+            drawingColorEl = $('drawing-color'),
+            drawingShadowColorEl = $('drawing-shadow-color'),
+            drawingLineWidthEl = $('drawing-line-width'),
+            drawingShadowWidth = $('drawing-shadow-width'),
+            drawingShadowOffset = $('drawing-shadow-offset'),
+            clearEl = $('clear-canvas'),
+            deleteObjectsEl = $('delete-objects'),
+            textValue = $('text-value'),
+            savingImgEl = $('save-canvas');
 
 
+        // textForm.submit = function( event ) {
+        //   event.preventDefault();
+        //   console.log("sdfsfag");
+        //   var text = new fabric.Text('Hello World!', { left: 100, top: 100 });
+        //   canvas.add(text);
+        // };
 
-  drawingModeEl.onclick = function() {
-    canvas.isDrawingMode = !canvas.isDrawingMode;
-    if (canvas.isDrawingMode) {
-      drawingModeEl.innerHTML = 'Cancel drawing mode';
-      drawingOptionsEl.style.display = '';
-    }
-    else {
-      drawingModeEl.innerHTML = 'Enter drawing mode';
-      drawingOptionsEl.style.display = 'none';
-    }
-  };
+        clearEl.onclick = function() { canvas.clear() };
 
-  insertingTextEL.onclick = function() {
-    var text = new fabric.Text('Hello World!', { left: 100, top: 100 });
-    canvas.add(text);
-  };
+        deleteObjectsEl.onclick = function() {
+            var activeObject = canvas.getActiveObject(),
+                activeGroup = canvas.getActiveGroup();
+            if (activeObject) { canvas.remove(activeObject); }
+            else if (activeGroup) {
+                var objectsInGroup = activeGroup.getObjects();
+                canvas.discardActiveGroup();
+                objectsInGroup.forEach(function(object) {
+                canvas.remove(object);
+                });
+            }
+        };
 
-  if (fabric.PatternBrush) {
-    var vLinePatternBrush = new fabric.PatternBrush(canvas);
-    vLinePatternBrush.getPatternSrc = function() {
+        drawingModeEl.onclick = function() {
+            canvas.isDrawingMode = !canvas.isDrawingMode;
+            if (canvas.isDrawingMode) {
+                drawingModeEl.innerHTML = 'Cancel drawing mode';
+                drawingOptionsEl.style.display = '';
+            } else {
+                drawingModeEl.innerHTML = 'Enter drawing mode';
+                drawingOptionsEl.style.display = 'none';
+            }
+        };
 
-      var patternCanvas = fabric.document.createElement('canvas');
-      patternCanvas.width = patternCanvas.height = 10;
-      var ctx = patternCanvas.getContext('2d');
+        insertingTextEL.onclick = function() {
+            var text = new fabric.Textbox(textValue.value, { left: 100, top: 100 });
+            canvas.add(text);
+        };
 
-      ctx.strokeStyle = this.color;
-      ctx.lineWidth = 5;
-      ctx.beginPath();
-      ctx.moveTo(0, 5);
-      ctx.lineTo(10, 5);
-      ctx.closePath();
-      ctx.stroke();
+        if (fabric.PatternBrush) {
+            var vLinePatternBrush = new fabric.PatternBrush(canvas);
+            vLinePatternBrush.getPatternSrc = function() {
 
-      return patternCanvas;
-    };
+                var patternCanvas = fabric.document.createElement('canvas');
+                patternCanvas.width = patternCanvas.height = 10;
+                var ctx = patternCanvas.getContext('2d');
 
-    var hLinePatternBrush = new fabric.PatternBrush(canvas);
-    hLinePatternBrush.getPatternSrc = function() {
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = 5;
+                ctx.beginPath();
+                ctx.moveTo(0, 5);
+                ctx.lineTo(10, 5);
+                ctx.closePath();
+                ctx.stroke();
 
-      var patternCanvas = fabric.document.createElement('canvas');
-      patternCanvas.width = patternCanvas.height = 10;
-      var ctx = patternCanvas.getContext('2d');
+                return patternCanvas;
+            };
 
-      ctx.strokeStyle = this.color;
-      ctx.lineWidth = 5;
-      ctx.beginPath();
-      ctx.moveTo(5, 0);
-      ctx.lineTo(5, 10);
-      ctx.closePath();
-      ctx.stroke();
+            var hLinePatternBrush = new fabric.PatternBrush(canvas);
+            hLinePatternBrush.getPatternSrc = function() {
 
-      return patternCanvas;
-    };
+                var patternCanvas = fabric.document.createElement('canvas');
+                patternCanvas.width = patternCanvas.height = 10;
+                var ctx = patternCanvas.getContext('2d');
 
-    var squarePatternBrush = new fabric.PatternBrush(canvas);
-    squarePatternBrush.getPatternSrc = function() {
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = 5;
+                ctx.beginPath();
+                ctx.moveTo(5, 0);
+                ctx.lineTo(5, 10);
+                ctx.closePath();
+                ctx.stroke();
 
-      var squareWidth = 10, squareDistance = 2;
+                return patternCanvas;
+            };
 
-      var patternCanvas = fabric.document.createElement('canvas');
-      patternCanvas.width = patternCanvas.height = squareWidth + squareDistance;
-      var ctx = patternCanvas.getContext('2d');
+            var squarePatternBrush = new fabric.PatternBrush(canvas);
+            squarePatternBrush.getPatternSrc = function() {
 
-      ctx.fillStyle = this.color;
-      ctx.fillRect(0, 0, squareWidth, squareWidth);
+                var squareWidth = 10, squareDistance = 2;
 
-      return patternCanvas;
-    };
+                var patternCanvas = fabric.document.createElement('canvas');
+                patternCanvas.width = patternCanvas.height = squareWidth + squareDistance;
+                var ctx = patternCanvas.getContext('2d');
 
-    var diamondPatternBrush = new fabric.PatternBrush(canvas);
-    diamondPatternBrush.getPatternSrc = function() {
+                ctx.fillStyle = this.color;
+                ctx.fillRect(0, 0, squareWidth, squareWidth);
 
-      var squareWidth = 10, squareDistance = 5;
-      var patternCanvas = fabric.document.createElement('canvas');
-      var rect = new fabric.Rect({
-        width: squareWidth,
-        height: squareWidth,
-        angle: 45,
-        fill: this.color
-      });
+                return patternCanvas;
+            };
 
-      var canvasWidth = rect.getBoundingRect().width;
+            var diamondPatternBrush = new fabric.PatternBrush(canvas);
+            diamondPatternBrush.getPatternSrc = function() {
 
-      patternCanvas.width = patternCanvas.height = canvasWidth + squareDistance;
-      rect.set({ left: canvasWidth / 2, top: canvasWidth / 2 });
+                var squareWidth = 10, squareDistance = 5;
+                var patternCanvas = fabric.document.createElement('canvas');
+                var rect = new fabric.Rect({
+                    width: squareWidth,
+                    height: squareWidth,
+                    angle: 45,
+                    fill: this.color
+                });
 
-      var ctx = patternCanvas.getContext('2d');
-      rect.render(ctx);
+                var canvasWidth = rect.getBoundingRect().width;
 
-      return patternCanvas;
-    };
+                patternCanvas.width = patternCanvas.height = canvasWidth + squareDistance;
+                rect.set({ left: canvasWidth / 2, top: canvasWidth / 2 });
 
-    var img = new Image();
-    img.src = 'empty.png';
+                var ctx = patternCanvas.getContext('2d');
+                rect.render(ctx);
 
-    var texturePatternBrush = new fabric.PatternBrush(canvas);
-    texturePatternBrush.source = img;
-  }
+                return patternCanvas;
+            };
 
-  $('drawing-mode-selector').onchange = function() {
+            var img = new Image();
+            img.src = 'empty.png';
 
-    if (this.value === 'hline') {
-      canvas.freeDrawingBrush = vLinePatternBrush;
-    }
-    else if (this.value === 'vline') {
-      canvas.freeDrawingBrush = hLinePatternBrush;
-    }
-    else if (this.value === 'square') {
-      canvas.freeDrawingBrush = squarePatternBrush;
-    }
-    else if (this.value === 'diamond') {
-      canvas.freeDrawingBrush = diamondPatternBrush;
-    }
-    else if (this.value === 'texture') {
-      canvas.freeDrawingBrush = texturePatternBrush;
-    }
-    else {
-      canvas.freeDrawingBrush = new fabric[this.value + 'Brush'](canvas);
-    }
+            var texturePatternBrush = new fabric.PatternBrush(canvas);
+            texturePatternBrush.source = img;
+        }
 
-    if (canvas.freeDrawingBrush) {
-      canvas.freeDrawingBrush.color = drawingColorEl.value;
-      canvas.freeDrawingBrush.width = parseInt(drawingLineWidthEl.value, 10) || 1;
-      canvas.freeDrawingBrush.shadow = new fabric.Shadow({
-        blur: parseInt(drawingShadowWidth.value, 10) || 0,
-        offsetX: 0,
-        offsetY: 0,
-        affectStroke: true,
-        color: drawingShadowColorEl.value,
-      });
-    }
-  };
 
-  drawingColorEl.onchange = function() {
-    canvas.freeDrawingBrush.color = this.value;
-  };
-  drawingShadowColorEl.onchange = function() {
-    canvas.freeDrawingBrush.shadow.color = this.value;
-  };
-  drawingLineWidthEl.onchange = function() {
-    canvas.freeDrawingBrush.width = parseInt(this.value, 10) || 1;
-    this.previousSibling.innerHTML = this.value;
-  };
-  drawingShadowWidth.onchange = function() {
-    canvas.freeDrawingBrush.shadow.blur = parseInt(this.value, 10) || 0;
-    this.previousSibling.innerHTML = this.value;
-  };
-  drawingShadowOffset.onchange = function() {
-    canvas.freeDrawingBrush.shadow.offsetX = parseInt(this.value, 10) || 0;
-    canvas.freeDrawingBrush.shadow.offsetY = parseInt(this.value, 10) || 0;
-    this.previousSibling.innerHTML = this.value;
-  };
+      $('drawing-mode-selector').onchange = function() {
 
-  if (canvas.freeDrawingBrush) {
-    canvas.freeDrawingBrush.color = drawingColorEl.value;
-    canvas.freeDrawingBrush.width = parseInt(drawingLineWidthEl.value, 10) || 1;
-    canvas.freeDrawingBrush.shadow = new fabric.Shadow({
-      blur: parseInt(drawingShadowWidth.value, 10) || 0,
-      offsetX: 0,
-      offsetY: 0,
-      affectStroke: true,
-      color: drawingShadowColorEl.value,
-    });
-  }
+        if (this.value === 'hline') {
+          canvas.freeDrawingBrush = vLinePatternBrush;
+        }
+        else if (this.value === 'vline') {
+          canvas.freeDrawingBrush = hLinePatternBrush;
+        }
+        else if (this.value === 'square') {
+          canvas.freeDrawingBrush = squarePatternBrush;
+        }
+        else if (this.value === 'diamond') {
+          canvas.freeDrawingBrush = diamondPatternBrush;
+        }
+        else if (this.value === 'texture') {
+          canvas.freeDrawingBrush = texturePatternBrush;
+        }
+        else {
+          canvas.freeDrawingBrush = new fabric[this.value + 'Brush'](canvas);
+        }
 
+        if (canvas.freeDrawingBrush) {
+          canvas.freeDrawingBrush.color = drawingColorEl.value;
+          canvas.freeDrawingBrush.width = parseInt(drawingLineWidthEl.value, 10) || 1;
+          canvas.freeDrawingBrush.shadow = new fabric.Shadow({
+            blur: parseInt(drawingShadowWidth.value, 10) || 0,
+            offsetX: 0,
+            offsetY: 0,
+            affectStroke: true,
+            color: drawingShadowColorEl.value,
+          });
+        }
+      };
+
+      drawingColorEl.onchange = function() {
+        canvas.freeDrawingBrush.color = this.value;
+      };
+      drawingShadowColorEl.onchange = function() {
+        canvas.freeDrawingBrush.shadow.color = this.value;
+      };
+      drawingLineWidthEl.onchange = function() {
+        canvas.freeDrawingBrush.width = parseInt(this.value, 10) || 1;
+        this.previousSibling.innerHTML = this.value;
+      };
+      drawingShadowWidth.onchange = function() {
+        canvas.freeDrawingBrush.shadow.blur = parseInt(this.value, 10) || 0;
+        this.previousSibling.innerHTML = this.value;
+      };
+      drawingShadowOffset.onchange = function() {
+        canvas.freeDrawingBrush.shadow.offsetX = parseInt(this.value, 10) || 0;
+        canvas.freeDrawingBrush.shadow.offsetY = parseInt(this.value, 10) || 0;
+        this.previousSibling.innerHTML = this.value;
+      };
+
+      if (canvas.freeDrawingBrush) {
+        canvas.freeDrawingBrush.color = drawingColorEl.value;
+        canvas.freeDrawingBrush.width = parseInt(drawingLineWidthEl.value, 10) || 1;
+        canvas.freeDrawingBrush.shadow = new fabric.Shadow({
+          blur: parseInt(drawingShadowWidth.value, 10) || 0,
+          offsetX: 0,
+          offsetY: 0,
+          affectStroke: true,
+          color: drawingShadowColorEl.value,
+        });
+      }
+
+      function download() {
+        var dt = canvas.toDataURL('image/jpeg');
+        this.href = dt;
+      };
+      downloadLnk.addEventListener('click', download, false);
 </script>
 
-<script>
-    function deleteObjects(){
-    var activeObject = canvas.getActiveObject(),
-        activeGroup = canvas.getActiveGroup();
-    canvas.remove(activeObject);
-    if (activeObject) {
-        canvas.remove(activeObject);
-    }
-}
-</script>
 
 <script>
-
  var socket = io();
  socket.on('canvas', function(canvasobj){
  console.log('HTML: ', canvas);
   canvas.clear();
   canvas.loadFromJSON(canvasobj, canvas.renderAll.bind(canvas));
  });
-
  // console.log(canvas);
  // setInterval(() => {
  //   var canvasStr = JSON.stringify(canvas);
  //   socket.emit('canvas', canvasStr);
  //   console.log(canvasStr);
  // }, 500);
-
-
 canvas.on('mouse:up', function(event){
   console.log(canvas)
    // event.preventDefault();
-
    var canvasStr = JSON.stringify(canvas);
   socket.emit('canvasEmit', canvasStr);
  });
- 
 
 </script>
 
