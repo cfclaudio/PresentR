@@ -14,7 +14,6 @@ const port = process.env.PORT || 3000;
 mongoose.Promise = global.Promise;
 
 var uri = "mongodb://admin:admin@ds117858.mlab.com:17858/presentr";
-
 mongoose.connect(uri);
 
 const app = express();
@@ -37,9 +36,13 @@ app.get('/canvas', (req, res, next) => {
     res.render('../views/canvas.hbs');
   }
   else {
-    res.redirect('/');
+    res.redirect('/failedLogin');
   }
-})
+});
+
+app.get('/failedLogin', (req, res) => {
+  res.render('../views/failedlogin.hbs')
+});
 
 app.post('/loginAttempt', (req, res, next) => {
 
@@ -47,18 +50,17 @@ app.post('/loginAttempt', (req, res, next) => {
     // console.log(success);
     if (!success) {
       console.log("this username dont exist");
-      res.redirect('/');
+      res.redirect('/failedLogin');
     }
     else {
       // console.log(bcrypt.compareSync(`${req.body.password}`, success.password));
       if(bcrypt.compareSync(`${req.body.password}`, success.password)) {
-        // console.log("this tru pass");
         res.redirect('/canvas');
         authenticated = true;
       }
       else {
         // console.log("this false pass");
-        res.redirect('/');
+        res.redirect('/failedLogin');
       }
 
 
@@ -92,12 +94,12 @@ io.on('connection', function(socket){
   var canv;
  socket.emit('canvas', function(canvasobj){
    // canv = canvasobj;
-   console.log('The canvas1: ', canv);
+   // console.log('The canvas1: ', canv);
    io.sockets.emit('canvas', canv);
 
   });
   socket.on('canvasEmit', (canvasobj) => {
-    console.log('The canvas2: ', canvasobj);
+    // console.log('The canvas2: ', canvasobj);
     canv = canvasobj;
     io.sockets.emit('canvas', canvasobj);
 
