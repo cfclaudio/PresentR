@@ -20,7 +20,8 @@
         <button id="text-mode" class="btn btn-info">Inserting text box</button>
         <button id="clear-canvas" class="btn btn-info">Clear</button>
         <button id="delete-objects">Delete selected object(s)</button>
-        <button id="save-canvas">Save drawing</button><br><br>
+        <button id="save-canvas"><a id="downloadLnk" download="presentr.jpg">Save drawing</a></button>
+        <br><br>
 
         <div id="drawing-mode-options" style="display:none">
             <label for="drawing-mode-selector">Mode:</label>
@@ -294,7 +295,11 @@
         });
       }
 
-
+      function download() {
+        var dt = canvas.toDataURL('image/jpeg');
+        this.href = dt;
+      };
+      downloadLnk.addEventListener('click', download, false);
 </script>
 
 
