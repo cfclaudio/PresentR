@@ -32,6 +32,9 @@ app.get('/canvas', (req, res, next) => {
   if (authenticated) {
     res.render('../views/canvas.hbs');
   }
+  else {
+    res.redirect('/')
+  }
 
 })
 
@@ -74,6 +77,10 @@ app.post('/register', (req, res) => {
 
 io.on('connection', (socket) => {
   console.log('New user connected');
+
+  socket.on('disconnect', () => {
+    console.log('New user disconnected');
+  })
 });
 
 server.listen(port, () => {

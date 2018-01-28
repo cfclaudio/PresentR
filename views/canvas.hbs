@@ -10,9 +10,7 @@
     <!-- Get the highest 1.X version of jQuery from CDN. Required for ready() function. -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <script>
-      var socket = io();
-    </script>
+    <script src="../server/socket.js"></script>
 
 <body>
         <!-- interactive menu -->
@@ -54,7 +52,7 @@
           </div>
 
             <div class="controls">
-                <p> Font-family: 
+                <p> Font-family:
                     <select id="font-family">
                         <option value="Times New Roman">Times New Roman</option>
                         <option value="Pacifico">Pacifico</option>
@@ -101,9 +99,9 @@
 
   clearEl.onclick = function() { canvas.clear() };
 
-  deleteObjectsEl.onclick = function() { 
+  deleteObjectsEl.onclick = function() {
     var activeObject = canvas.getActiveObject();
-    canvas.remove(activeObject); 
+    canvas.remove(activeObject);
   }
 
 
