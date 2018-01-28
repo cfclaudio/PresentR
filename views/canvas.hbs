@@ -27,6 +27,9 @@
         <input id="imageLoader" type="file" name="imageLoader" />
         <br><br>
 
+        <label for="drawing-color">Line/Text color:</label>
+            <input type="color" value="#000080" id="drawing-color"><br><br>
+
         <div id="drawing-mode-options" style="display:none">
             <label for="drawing-mode-selector">Mode:</label>
             <select id="drawing-mode-selector">
@@ -44,9 +47,6 @@
 
             <label for="drawing-line-width">Line width:</label>
             <span class="info">10</span><input type="range" value="10" min="0" max="150" id="drawing-line-width">
-
-            <label for="drawing-color">Line color:</label>
-            <input type="color" value="#000080" id="drawing-color"><br>
 
             <label for="drawing-shadow-width">Shadow width:</label>
             <span class="info">0</span><input type="range" value="0" min="0" max="50" id="drawing-shadow-width">
@@ -137,13 +137,14 @@
 
         insertingTextEL.onclick = function() {
             var text = new fabric.IText(textValue.value, { left: 100, top: 100 });
+            text.fill = drawingColorEl.value;
             canvas.add(text);
         };
 
         circleEl.onclick = function() {
             var circle = new fabric.Circle( {
               radius: 20,
-              fill: 'green',
+              fill: drawingColorEl.value,
               left: 100,
               top: 100
             });
@@ -154,7 +155,7 @@
           var rect = new fabric.Rect( {
             width: 50,
             height: 30,
-            fill: 'blue',
+            fill: drawingColorEl.value,
             left: 100,
             top: 100
           });
