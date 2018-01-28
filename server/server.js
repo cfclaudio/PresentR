@@ -29,8 +29,9 @@ app.get('/canvas', (req, res) => {
 })
 
 app.post('/loginAttempt', (req, res) => {
-  User.findOne({'username': req.body.username, 'password': req.body.password}, (err, success) => {
-    if (err) {
+
+  User.findOne({'username': `${req.body.username}`, 'password': `${req.body.password}`}, (err, success) => {
+    if (!success) {
       res.redirect('/');
     }
     else {
