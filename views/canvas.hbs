@@ -17,8 +17,7 @@
     <div style="display: inline-block; margin-left: 10px">
 
         <button id="drawing-mode" class="btn btn-info">Enter drawing mode</button>
-        <button id="text-mode" class="btn btn-info">Insert text box</button>
-        <input type="text" id="text-value" name="longText" value="AddYourTextHere">
+        <button id="text-mode" class="btn btn-info">Enter text mode</button>
         <button id="add-circle" class="btn btn-info">Add circle</button>
         <button id="add-rect" class="btn btn-info">Add rect</button>
         <button id="delete-objects">Delete selected object(s)</button>
@@ -27,8 +26,10 @@
         <input id="imageLoader" type="file" name="imageLoader" />
         <br><br>
 
-        <label for="drawing-color">Color:</label>
-            <input type="color" value="#000080" id="drawing-color"><br><br>
+        <div id="text-mode-options" style="display:none">
+          <button id="insert-text">Insert text box</button>
+          <input type="text" id="text-value" name="longText" value="AddYourTextHere">
+        </div>
 
         <div id="drawing-mode-options" style="display:none">
             <label for="drawing-mode-selector">Mode:</label>
@@ -48,11 +49,14 @@
             <label for="drawing-line-width">Line width:</label>
             <span class="info">10</span><input type="range" value="10" min="0" max="150" id="drawing-line-width">
 
+            <label for="drawing-color">Line color:</label>
+            <input type="color" value="#000080" id="drawing-color"><br>
+
             <label for="drawing-shadow-width">Shadow width:</label>
             <span class="info">0</span><input type="range" value="0" min="0" max="50" id="drawing-shadow-width">
 
             <label for="drawing-shadow-color">Shadow color:</label>
-            <input type="color" value=" #080808" id="drawing-shadow-color">
+            <input type="color" value="#080808" id="drawing-shadow-color">
 
             <label for="drawing-shadow-offset">Shadow offset:</label>
             <span class="info">0</span><input type="range" value="0" min="0" max="50" id="drawing-shadow-offset">
@@ -95,7 +99,9 @@
         fabric.Object.prototype.transparentCorners = false;
 
         var drawingModeEl = $('drawing-mode'),
-            insertingTextEL = $('text-mode'),
+            textModeEl = $('text-mode'),
+            insertingTextEL = $('insert-text'),
+            textOptionsEl = $('text-mode-options'),
             drawingOptionsEl = $('drawing-mode-options'),
             drawingColorEl = $('drawing-color'),
             drawingShadowColorEl = $('drawing-shadow-color'),
@@ -108,6 +114,8 @@
             savingImgEl = $('save-canvas'),
             circleEl = $('add-circle'),
             rectEl = $('add-rect');
+
+        var notTextMode = true;
 
         clearEl.onclick = function() { canvas.clear() };
 
@@ -129,22 +137,38 @@
             if (canvas.isDrawingMode) {
                 drawingModeEl.innerHTML = 'Cancel drawing mode';
                 drawingOptionsEl.style.display = '';
+            } else if (isTextMode) {
             } else {
                 drawingModeEl.innerHTML = 'Enter drawing mode';
                 drawingOptionsEl.style.display = 'none';
             }
         };
 
+        textModeEl.onclick = function(){
+            if (notTextMode) {
+              console.log('istextmode');
+                textModeEl.innerHTML = 'Cancel text mode';
+                textOptionsEl.style.display = '';
+                isTextMode = false;
+            } else if (canvas.isDrawingMode) {
+              console.log('else');
+            } else {
+              console.log('is not textmode');
+                textModeEl.innerHTML = 'Enter text mode';
+                textOptionsEl.style.display = 'none';
+                isTextMode = true;
+            }
+        };
+
         insertingTextEL.onclick = function() {
             var text = new fabric.IText(textValue.value, { left: 100, top: 100 });
-            text.fill = drawingColorEl.value;
             canvas.add(text);
         };
 
         circleEl.onclick = function() {
             var circle = new fabric.Circle( {
               radius: 20,
-              fill: drawingColorEl.value,
+              fill: 'green',
               left: 100,
               top: 100
             });
@@ -155,7 +179,7 @@
           var rect = new fabric.Rect( {
             width: 50,
             height: 30,
-            fill: drawingColorEl.value,
+            fill: 'blue',
             left: 100,
             top: 100
           });
