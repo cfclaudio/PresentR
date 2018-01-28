@@ -19,8 +19,14 @@
         <button id="drawing-mode" class="btn btn-info">Enter drawing mode</button>
         <button id="text-mode" class="btn btn-info">Insert text box</button>
         <input type="text" id="text-value" name="longText" value="AddYourTextHere">
-        <button id="add-circle" class="btn btn-info">Add circle</button>
-        <button id="add-rect" class="btn btn-info">Add rect</button>
+        <span class="add-shape-options" style="">
+            <label for="shape-selector"></label>
+            <select id="shape-selector">
+                <option value="cir">Add shape</option>
+                <option value="cir">circle</option>
+                <option value="rect">rectangle</option>
+            </select>
+        </span>
         <button id="delete-objects">Delete selected object(s)</button>
         <button id="clear-canvas" class="btn btn-info">Clear</button>
         <button id="save-canvas"><a id="downloadLnk" download="presentr.jpg">Save drawing</a></button>
@@ -59,16 +65,6 @@
           </div>
           <br>
 
-            <div class="controls" style="display:none">
-              <label for="font-family">Font-family:</label>
-              <select id="font-family">
-                  <option value="Times New Roman">Times New Roman</option>
-                  <option value="Pacifico">Pacifico</option>
-                  <option value="VT323">VT323</option>
-                  <option value="Quicksand">Quicksand</option>
-                  <option value="Inconsolata">Inconsolata</option>
-              </select>
-            </div>
         </div>
 
         <!-- A canvas tag is required or
@@ -106,8 +102,7 @@
             deleteObjectsEl = $('delete-objects'),
             textValue = $('text-value'),
             savingImgEl = $('save-canvas'),
-            circleEl = $('add-circle'),
-            rectEl = $('add-rect');
+            addShapeOptionsEL = $('add-shape-options');
 
         clearEl.onclick = function() { canvas.clear() };
 
@@ -139,27 +134,6 @@
             var text = new fabric.IText(textValue.value, { left: 100, top: 100 });
             text.fill = drawingColorEl.value;
             canvas.add(text);
-        };
-
-        circleEl.onclick = function() {
-            var circle = new fabric.Circle( {
-              radius: 20,
-              fill: drawingColorEl.value,
-              left: 100,
-              top: 100
-            });
-            canvas.add(circle);
-        };
-
-        rectEl.onclick = function() {
-          var rect = new fabric.Rect( {
-            width: 50,
-            height: 30,
-            fill: drawingColorEl.value,
-            left: 100,
-            top: 100
-          });
-          canvas.add(rect);
         };
 
         if (fabric.PatternBrush) {
@@ -243,6 +217,28 @@
             var texturePatternBrush = new fabric.PatternBrush(canvas);
             texturePatternBrush.source = img;
         }
+
+      $('shape-selector').onchange = function() {
+
+        if (this.value === 'cir') {
+          var circle = new fabric.Circle( {
+              radius: 20,
+              fill: drawingColorEl.value,
+              left: 100,
+              top: 100
+            });
+            canvas.add(circle);
+        }  else if (this.value === 'rect') {
+            var rect = new fabric.Rect( {
+            width: 50,
+            height: 30,
+            fill: drawingColorEl.value,
+            left: 100,
+            top: 100
+          });
+          canvas.add(rect);
+        }
+      };
 
 
       $('drawing-mode-selector').onchange = function() {
